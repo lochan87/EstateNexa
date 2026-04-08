@@ -4,7 +4,8 @@ from typing import Literal, Optional
 
 import psycopg2
 from psycopg2 import OperationalError
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel, EmailStr
@@ -43,6 +44,10 @@ class TokenResponse(BaseModel):
     token_type: str = "bearer"
     user_id: int
     role: str
+
+
+class LogoutResponse(BaseModel):
+    message: str
 
 
 def get_db_connection():
@@ -160,3 +165,21 @@ def decode_token(token: str) -> dict:
         return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
     except JWTError as exc:
         raise HTTPException(status_code=401, detail="Invalid or expired token") from exc
+
+
+security = HTTPBearer()
+
+
+def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> dict:
+    token = credentials.credentials
+    payload = decode_token(token)
+    user_id = payload.get("sub")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    return {"user_id": user_id, "role": payload.get("role")}
+
+
+@router.post("/logout", response_model=LogoutResponse)
+def logout(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    current_user = get_current_user(credentials)
+    return LogoutResponse(message=f"User {current_user['user_id']} successfully logged out")
