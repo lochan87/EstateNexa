@@ -69,14 +69,3 @@ CREATE INDEX idx_chat_user ON chat_sessions(user_id);
 CREATE INDEX idx_ai_user ON ai_responses(user_id);
 CREATE INDEX idx_documents_role ON documents(access_role);
 
-ALTER TABLE documents ADD COLUMN IF NOT EXISTS agent_id INT REFERENCES users(id);
-
-CREATE INDEX idx_docs_agent ON documents(agent_id);
-
--- 1. Remove existing default (SERIAL sequence)
-ALTER TABLE users
-ALTER COLUMN id DROP DEFAULT;
-
--- 2. Add identity
-ALTER TABLE users
-ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY;
