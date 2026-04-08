@@ -1,6 +1,28 @@
 .env
+.env.*
+.python-version
+
 venv/
+.venv/
+env/
+
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
+
+# Tool and test caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Local IDE/project metadata
+.vscode/
+.idea/
