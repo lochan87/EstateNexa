@@ -26,3 +26,5 @@ dist/
 # Local IDE/project metadata
 .vscode/
 .idea/
+
+backend/data/

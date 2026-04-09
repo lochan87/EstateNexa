@@ -4,3 +4,9 @@ psycopg2-binary
 passlib
 python-jose[cryptography]
 pydantic[email]
+langchain
+langchain-community
+chromadb
+sentence-transformers
+pytest
+pypdf

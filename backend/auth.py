@@ -36,7 +36,7 @@ class RegisterRequest(BaseModel):
 class LoginRequest(BaseModel):
     email: EmailStr
     password: str
-    role: Literal["buyer", "agent"] = "buyer"
+    role: Literal["buyer", "agent", "admin"] = "buyer"
 
 
 class TokenResponse(BaseModel):
@@ -150,8 +150,8 @@ def login(payload: LoginRequest):
     if not user:
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
-    if payload.role not in {"buyer", "agent"}:
-        raise HTTPException(status_code=400, detail="Role must be buyer or agent")
+    if payload.role not in {"buyer", "agent", "admin"}:
+        raise HTTPException(status_code=400, detail="Role must be buyer, agent, or admin")
 
     if user["role"] != payload.role:
         raise HTTPException(status_code=403, detail=f"This account is not registered as {payload.role}")
