@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from pathlib import Path
 import re
-from collections import Counter
 
 from .pdf_reader import read_pdf
 from .summarizer import generate_summary
@@ -13,6 +12,8 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DOCUMENTS_DIR = PROJECT_ROOT / "Documents"
 MAX_INPUT_CHARS = 18000
 PER_DOCUMENT_CHAR_LIMIT = 4500
+RAG_TOP_K = 5
+RAG_CONTEXT_CHAR_LIMIT = 9000
 
 
 def _categorize_document(file_name: str) -> str:
@@ -103,6 +104,49 @@ def _extract_relevant_sections(text: str, keywords: list[str], max_chars: int = 
     result = ". ".join(selected)
     return result[:max_chars]
 
+
+def _fetch_rag_context(role: str, query: str) -> str:
+    """Fetch semantic context from the vector store for the given query."""
+    normalized_query = (query or "").strip()
+    if not normalized_query:
+        return ""
+
+    try:
+        from rag.models import PropertyFilters
+        from rag.retrieval import property_retrieval_tool
+    except Exception:
+        return ""
+
+    try:
+        results = property_retrieval_tool(
+            query=normalized_query,
+            filters=PropertyFilters(),
+            user_role=role,
+            top_k=RAG_TOP_K,
+        )
+    except Exception:
+        return ""
+
+    if not results:
+        return ""
+
+    chunks = []
+    for index, item in enumerate(results, start=1):
+        highlights = item.get("highlights") or []
+        highlights_text = "; ".join(str(point) for point in highlights[:3])
+        chunks.append(
+            (
+                f"Result {index} | ID: {item.get('property_id', '')} | "
+                f"Location: {item.get('location', '')} | "
+                f"Type: {item.get('property_type', '')} | "
+                f"Bedrooms: {item.get('bedrooms', '')}\n"
+                f"Highlights: {highlights_text}\n"
+                f"Snippet: {(item.get('summary') or '').strip()}"
+            )
+        )
+
+    return "\n\n".join(chunks)[:RAG_CONTEXT_CHAR_LIMIT]
+
 ROLE_CATEGORIES = {
     "buyer": {"market", "property"},
     "agent": {"market", "property", "financial"},
@@ -118,9 +162,10 @@ def summarize_documents(role: str, query: str = "") -> str:
 
     role_key = (role or "").strip().lower()
     normalized_role = role_key if role_key in ROLE_CATEGORIES else "buyer"
+    rag_context = _fetch_rag_context(normalized_role, query)
     allowed_categories = ROLE_CATEGORIES[normalized_role]
     documents = _discover_documents()
-    if not documents:
+    if not documents and not rag_context:
         return ""
 
     selected_docs = [doc for doc in documents if doc["category"] in allowed_categories]
@@ -140,6 +185,9 @@ def summarize_documents(role: str, query: str = "") -> str:
             
             if relevant_text:
                 extracted_parts.append(f"[{doc['category'].upper()}] {path}\n{relevant_text}")
+
+    if rag_context:
+        extracted_parts.insert(0, f"[RAG] Semantic retrieval context\n{rag_context}")
 
     combined_text = "\n\n".join(extracted_parts).strip()
     if not combined_text:
