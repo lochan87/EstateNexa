@@ -7,8 +7,16 @@ from typing import Any
 from langchain_community.vectorstores import Chroma
 
 from rag.models import PropertyFilters
-from rag.security import filter_sensitive_fields, normalize_role
+from rag.security import apply_role_based_filter, normalize_role
 from rag.vector_store import get_property_vector_store
+
+
+INTENT_KEYWORDS = {
+    "price_query": ("price", "cost", "quoted price", "actual price", "how much"),
+    "location_query": ("location", "where", "area", "locality", "near"),
+    "comparison_query": ("compare", "comparison", "vs", "versus", "difference"),
+    "investment_query": ("invest", "investment", "roi", "return", "yield", "appreciation"),
+}
 
 
 KNOWN_LOCATIONS = {
@@ -64,6 +72,57 @@ def _matches_location(record_location: str | None, target_location: str) -> bool
     return record == target or target in record
 
 
+def detect_intent(query: str) -> str:
+    """Classify the user's request into a deterministic intent bucket."""
+    normalized = _normalize_text(query)
+
+    if not normalized:
+        return "full_details"
+
+    for intent, keywords in INTENT_KEYWORDS.items():
+        if any(keyword in normalized for keyword in keywords):
+            return intent
+
+    return "full_details"
+
+
+def _deduplicate_results(results: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    seen: set[str] = set()
+    deduplicated: list[dict[str, Any]] = []
+
+    for item in results:
+        property_id = str(item.get("property_id", "")).strip()
+        if not property_id or property_id in seen:
+            continue
+        seen.add(property_id)
+        deduplicated.append(item)
+
+    return deduplicated
+
+
+def _is_specific_query(query: str, intent: str) -> bool:
+    normalized = _normalize_text(query)
+    if intent == "price_query":
+        return True
+
+    specificity_markers = (
+        "exact",
+        "specific",
+        "only",
+        "single",
+        "one",
+        "best",
+        "top",
+        "price",
+    )
+    return any(marker in normalized for marker in specificity_markers)
+
+
+def _truncate_results(results: list[dict[str, Any]], query: str, intent: str) -> list[dict[str, Any]]:
+    limit = 1 if _is_specific_query(query, intent) else 2
+    return results[:limit]
+
+
 def _build_where_clause(filters: PropertyFilters, role: str, query: str) -> dict[str, Any] | None:
     role = normalize_role(role)
     clauses: list[dict[str, Any]] = []
@@ -109,6 +168,8 @@ def _format_result(doc, score: float, role: str, query: str) -> dict[str, Any]:
         "location": metadata.get("location"),
         "actual_price": metadata.get("actual_price"),
         "quoted_price": metadata.get("quoted_price"),
+        "agent_contact": metadata.get("agent_contact"),
+        "internal_notes": metadata.get("internal_notes"),
         "bedrooms": metadata.get("bedrooms"),
         "property_type": metadata.get("property_type"),
         "highlights": _highlights(metadata, query),
@@ -116,10 +177,69 @@ def _format_result(doc, score: float, role: str, query: str) -> dict[str, Any]:
         "sensitive_tags": metadata.get("sensitive_tags", []),
     }
 
-    sanitized = filter_sensitive_fields([result], role)[0]
-    sanitized.pop("quoted_price", None)
-    sanitized.pop("actual_price", None)
-    return sanitized
+    return apply_role_based_filter([result], role)[0]
+
+
+def format_response_by_intent(results: list[dict[str, Any]], intent: str, role: str) -> list[dict[str, Any]]:
+    """Shape already role-filtered results into a minimal, intent-aware payload."""
+    normalized_role = normalize_role(role)
+    normalized_intent = (intent or "full_details").strip().lower()
+
+    formatted: list[dict[str, Any]] = []
+    for item in results:
+        base = {
+            "property_id": item.get("property_id"),
+            "location": item.get("location"),
+            "property_type": item.get("property_type"),
+        }
+
+        visible_price = item.get("visible_price")
+        if visible_price is None and "price" in item:
+            visible_price = item.get("price")
+
+        if normalized_intent == "price_query":
+            formatted.append({
+                **base,
+                "price": visible_price,
+            })
+            continue
+
+        if normalized_intent == "location_query":
+            formatted.append(base)
+            continue
+
+        if normalized_intent == "comparison_query":
+            formatted.append({
+                **base,
+                "visible_price": visible_price,
+                "bedrooms": item.get("bedrooms"),
+                "highlights": item.get("highlights", [])[:2],
+            })
+            continue
+
+        if normalized_intent == "investment_query":
+            formatted.append({
+                **base,
+                "visible_price": visible_price,
+                "bedrooms": item.get("bedrooms"),
+                "highlights": item.get("highlights", [])[:2],
+            })
+            continue
+
+        formatted_item = {
+            **base,
+            "visible_price": visible_price,
+            "bedrooms": item.get("bedrooms"),
+            "highlights": item.get("highlights", []),
+            "summary": item.get("summary"),
+        }
+
+        if normalized_role == "admin" and item.get("admin_fields"):
+            formatted_item["admin_fields"] = item.get("admin_fields")
+
+        formatted.append(formatted_item)
+
+    return formatted
 
 
 def property_retrieval_tool(
@@ -132,6 +252,7 @@ def property_retrieval_tool(
     role = normalize_role(user_role)
     store = vector_store or get_property_vector_store()
     effective_location = filters.location or _infer_location_from_query(query)
+    intent = detect_intent(query)
     where = _build_where_clause(filters=filters, role=role, query=query)
 
     docs_with_scores = store.similarity_search_with_relevance_scores(
@@ -149,4 +270,15 @@ def property_retrieval_tool(
             if _matches_location((row[0].metadata or {}).get("location"), effective_location)
         ]
 
-    return [_format_result(doc, score, role, query) for doc, score in ranked]
+    results = [_format_result(doc, score, role, query) for doc, score in ranked]
+    results = _deduplicate_results(results)
+    results = _truncate_results(results, query=query, intent=intent)
+    results = format_response_by_intent(results, intent=intent, role=role)
+
+    for item in results:
+        assert "actual_price" not in item
+        assert "quoted_price" not in item
+        assert "agent_contact" not in item
+        assert "internal_notes" not in item
+
+    return results
