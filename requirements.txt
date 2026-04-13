@@ -4,8 +4,12 @@ psycopg2-binary
 passlib
 python-jose[cryptography]
 pydantic[email]
+python-dotenv
 langchain
 langchain-community
+langchain-chroma
+langchain-huggingface
+langchain-groq
 chromadb
 sentence-transformers
 pytest
