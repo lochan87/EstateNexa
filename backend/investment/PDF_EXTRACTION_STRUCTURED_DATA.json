@@ -1,0 +1,596 @@
+{
+  "extraction_metadata": {
+    "extraction_date": "2026-04-09",
+    "extraction_tool": "PyPDF2",
+    "total_pdfs_analyzed": 6,
+    "workspace": "/Users/dharaneeshkuruba/Desktop/EstateNexa/Documents"
+  },
+  "property_listings": [
+    {
+      "property_id": "PROP001",
+      "agent_id": 3,
+      "agent_name": "Rajesh Kumar",
+      "agent_contact": "+91-98450-11234",
+      "agency_name": "Prestige Realty Bangalore",
+      "agent_experience_years": 9,
+      "location": "Whitefield",
+      "coordinates": {
+        "latitude": 12.9698,
+        "longitude": 77.7499
+      },
+      "actual_price_inr": 8500000,
+      "quoted_price_inr": 8900000,
+      "price_discount_inr": 400000,
+      "price_discount_percent": 4.7,
+      "size_sqft": 1250,
+      "bedrooms": 2,
+      "property_type": "Apartment",
+      "availability_status": "Available",
+      "price_per_sqft": {
+        "actual": 6800,
+        "quoted": 7120
+      },
+      "amenities": ["Parking", "Gym", "Security", "Power Backup", "Clubhouse"],
+      "nearby_locations": ["ITPL Tech Park", "Whitefield Metro Station", "Ryan International School"],
+      "description": "A well-maintained 2BHK apartment in the heart of Whitefield with modern interiors. Located within walking distance of ITPL and key tech hubs. Ideal for IT professionals seeking a ready-to-move home."
+    },
+    {
+      "property_id": "PROP002",
+      "agent_id": 3,
+      "agent_name": "Rajesh Kumar",
+      "location": "Sarjapur",
+      "coordinates": {
+        "latitude": 12.8586,
+        "longitude": 77.7859
+      },
+      "actual_price_inr": 12000000,
+      "quoted_price_inr": 12600000,
+      "price_discount_inr": 600000,
+      "price_discount_percent": 4.8,
+      "size_sqft": 1800,
+      "bedrooms": 3,
+      "property_type": "Apartment",
+      "availability_status": "Available",
+      "price_per_sqft": {
+        "actual": 6667,
+        "quoted": 7000
+      },
+      "amenities": ["Parking", "Swimming Pool", "Gym", "24/7 Security", "Intercom"],
+      "nearby_locations": ["Eco Space Business Park", "Sarjapur Road Signal", "Greenwood High School"],
+      "description": "Spacious 3BHK apartment in a gated community on Sarjapur Road with premium fittings. Close to major IT corridors and reputed schools."
+    },
+    {
+      "property_id": "PROP003",
+      "agent_id": 3,
+      "agent_name": "Rajesh Kumar",
+      "location": "Bellandur",
+      "coordinates": {
+        "latitude": 12.9257,
+        "longitude": 77.6722
+      },
+      "actual_price_inr": 5500000,
+      "quoted_price_inr": 5750000,
+      "price_discount_inr": 250000,
+      "price_discount_percent": 4.3,
+      "size_sqft": 900,
+      "bedrooms": 2,
+      "property_type": "Apartment",
+      "availability_status": "Under Agreement",
+      "price_per_sqft": {
+        "actual": 6111,
+        "quoted": 6389
+      },
+      "amenities": ["Parking", "Security", "Lift", "Power Backup"],
+      "nearby_locations": ["Outer Ring Road", "Bellandur Lake", "AECS Layout Market"],
+      "description": "Compact 2BHK apartment in Bellandur offering excellent connectivity via Outer Ring Road. Suitable for young professionals and small families."
+    },
+    {
+      "property_id": "PROP004",
+      "agent_id": 4,
+      "agent_name": "Sunita Nair",
+      "agent_contact": "+91-97410-22345",
+      "agency_name": "HomeFinder Bangalore",
+      "agent_experience_years": 12,
+      "location": "Marathahalli",
+      "coordinates": {
+        "latitude": 12.9591,
+        "longitude": 77.6974
+      },
+      "actual_price_inr": 22000000,
+      "quoted_price_inr": 23000000,
+      "price_discount_inr": 1000000,
+      "price_discount_percent": 4.3,
+      "size_sqft": 2800,
+      "bedrooms": 4,
+      "property_type": "Villa",
+      "availability_status": "Available",
+      "price_per_sqft": {
+        "actual": 7857,
+        "quoted": 8214
+      },
+      "amenities": ["Parking", "Private Garden", "Security", "Generator", "Modular Kitchen"],
+      "nearby_locations": ["Marathahalli Bridge", "Phoenix Marketcity", "Vibgyor High School"],
+      "description": "Luxurious 4BHK independent villa in Marathahalli with a private garden and modern amenities. Perfect for families seeking premium suburban living."
+    },
+    {
+      "property_id": "PROP005",
+      "agent_id": 4,
+      "agent_name": "Sunita Nair",
+      "location": "Sarjapur",
+      "actual_price_inr": 4500000,
+      "quoted_price_inr": 4700000,
+      "price_discount_inr": 200000,
+      "price_discount_percent": 4.3,
+      "size_sqft": 2400,
+      "bedrooms": 0,
+      "property_type": "Plot",
+      "availability_status": "Available",
+      "amenities": ["Fencing", "Water Connection", "Clear Title"],
+      "description": "Residential plot offering development potential in a growing area."
+    },
+    {
+      "property_id": "PROP006",
+      "agent_id": 4,
+      "agent_name": "Sunita Nair",
+      "location": "Yelahanka",
+      "coordinates": {
+        "latitude": 13.0358,
+        "longitude": 77.5970
+      },
+      "actual_price_inr": 4500000,
+      "quoted_price_inr": 4700000,
+      "price_discount_inr": 200000,
+      "price_discount_percent": 4.3,
+      "size_sqft": 2400,
+      "bedrooms": 0,
+      "property_type": "Plot",
+      "availability_status": "Available",
+      "amenities": ["Fencing", "Water Connection", "Clear Title", "BBMP Approved"],
+      "nearby_locations": ["Kempegowda International Airport", "Yelahanka New Town", "CRPF Campus"],
+      "description": "Residential plot in Yelahanka with BBMP approval and clear title. Strategically located near the international airport and upcoming metro corridor."
+    },
+    {
+      "property_id": "PROP007",
+      "agent_id": 4,
+      "agent_name": "Sunita Nair",
+      "location": "Hebbal",
+      "coordinates": {
+        "latitude": 13.0358,
+        "longitude": 77.5970
+      },
+      "actual_price_inr": 10500000,
+      "quoted_price_inr": 11000000,
+      "price_discount_inr": 500000,
+      "price_discount_percent": 4.5,
+      "size_sqft": 1500,
+      "bedrooms": 3,
+      "property_type": "Apartment",
+      "availability_status": "Available",
+      "price_per_sqft": {
+        "actual": 7000,
+        "quoted": 7333
+      },
+      "amenities": ["Parking", "Gym", "Swimming Pool", "Children's Play Area", "Security"],
+      "nearby_locations": ["Hebbal Flyover", "Manyata Tech Park", "Columbia Asia Hospital"],
+      "description": "Premium 3BHK apartment in Hebbal with stunning lake views and top-grade amenities. A sought-after location for professionals and families."
+    },
+    {
+      "property_id": "PROP008",
+      "agent_id": 5,
+      "agent_name": "Arvind Sharma",
+      "agent_contact": "+91-96320-33456",
+      "agency_name": "Urban Nest Properties",
+      "agent_experience_years": 7,
+      "location": "HSR Layout",
+      "coordinates": {
+        "latitude": 12.9116,
+        "longitude": 77.6387
+      },
+      "actual_price_inr": 18000000,
+      "quoted_price_inr": 18800000,
+      "price_discount_inr": 800000,
+      "price_discount_percent": 4.3,
+      "bedrooms": 3,
+      "property_type": "Villa",
+      "availability_status": "Available",
+      "amenities": ["Parking", "Terrace Garden", "Eco-friendly features"],
+      "description": "Elegant 3BHK independent villa in HSR Layout with eco-friendly features and a terrace garden. Located in a peaceful residential pocket with easy access to major tech corridors."
+    },
+    {
+      "property_id": "PROP009",
+      "agent_id": 5,
+      "agent_name": "Arvind Sharma",
+      "location": "Electronic City",
+      "coordinates": {
+        "latitude": 12.8399,
+        "longitude": 77.6770
+      },
+      "actual_price_inr": 6200000,
+      "quoted_price_inr": 6500000,
+      "price_discount_inr": 300000,
+      "price_discount_percent": 4.6,
+      "size_sqft": 1100,
+      "bedrooms": 2,
+      "property_type": "Apartment",
+      "availability_status": "Available",
+      "price_per_sqft": {
+        "actual": 5636,
+        "quoted": 5909
+      },
+      "amenities": ["Parking", "Security", "Gym", "Lift", "Power Backup"],
+      "nearby_locations": ["Infosys Campus", "Electronic City Metro Station", "Nesto Hypermarket"],
+      "description": "Affordable 2BHK apartment in Electronic City Phase 1 close to major IT campuses. A smart choice for first-time buyers and investors."
+    },
+    {
+      "property_id": "PROP010",
+      "agent_id": 5,
+      "agent_name": "Arvind Sharma",
+      "location": "KR Puram",
+      "coordinates": {
+        "latitude": 13.0024,
+        "longitude": 77.6952
+      },
+      "actual_price_inr": 3800000,
+      "quoted_price_inr": 4000000,
+      "price_discount_inr": 200000,
+      "price_discount_percent": 5.0,
+      "size_sqft": 1800,
+      "bedrooms": 0,
+      "property_type": "Plot",
+      "availability_status": "Available",
+      "amenities": ["BMRDA Approved", "Water Connection", "Corner Site", "Clear Title"],
+      "nearby_locations": ["KR Puram Railway Station", "AECS Layout", "Manipal Hospital Whitefield"],
+      "description": "Strategically located plot in emerging KR Puram area for investment and development."
+    },
+    {
+      "property_id": "PROP011",
+      "agent_id": 5,
+      "agent_name": "Arvind Sharma",
+      "location": "Bannerghatta",
+      "coordinates": {
+        "latitude": 12.8631,
+        "longitude": 77.5963
+      },
+      "actual_price_inr": 32000000,
+      "quoted_price_inr": 33500000,
+      "price_discount_inr": 1500000,
+      "price_discount_percent": 4.5,
+      "size_sqft": 3500,
+      "bedrooms": 4,
+      "property_type": "Villa",
+      "availability_status": "Available",
+      "price_per_sqft": {
+        "actual": 9143,
+        "quoted": 9571
+      },
+      "amenities": ["Parking", "Swimming Pool", "Private Garden", "Security", "Home Automation", "Generator"],
+      "nearby_locations": ["Bannerghatta National Park", "IIM Bangalore", "Fortis Hospital Bannerghatta"],
+      "description": "Grand 4BHK luxury villa in Bannerghatta Road with home automation and a large private garden. Perfect for discerning buyers seeking exclusivity and comfort."
+    }
+  ],
+  "investment_insights": [
+    {
+      "insight_id": "INS001",
+      "insight_type": "Location",
+      "target_category": "Whitefield",
+      "condition": "If user wants high rental income near IT corridors",
+      "recommendation": "Invest in 2BHK apartments in Whitefield priced between 80L–1.2Cr",
+      "reasoning": "Whitefield hosts ITPL and major tech parks driving consistent tenant demand from IT professionals. Vacancy rates remain below 5% year-round.",
+      "expected_rental_yield_min": 4.0,
+      "expected_rental_yield_max": 5.0,
+      "expected_capital_appreciation_min": 8.0,
+      "expected_capital_appreciation_max": 10.0,
+      "risk_level": "Low",
+      "confidence_level": "High"
+    },
+    {
+      "insight_id": "INS002",
+      "insight_type": "Location",
+      "target_category": "Sarjapur",
+      "condition": "If user is targeting high capital appreciation over 5–7 years",
+      "recommendation": "Buy plots or 3BHK apartments in Sarjapur Road corridor before infrastructure completion",
+      "reasoning": "Sarjapur is an emerging IT and residential hub with planned metro extension and Peripheral Ring Road access boosting future valuations significantly.",
+      "expected_capital_appreciation_min": 15.0,
+      "expected_capital_appreciation_max": 20.0,
+      "investment_horizon_years": 5,
+      "risk_level": "Medium",
+      "confidence_level": "High"
+    },
+    {
+      "insight_id": "INS003",
+      "insight_type": "Location",
+      "target_category": "Yelahanka",
+      "condition": "If user has a long-term investment horizon of 7–10 years with low risk appetite",
+      "recommendation": "Purchase BBMP-approved residential plots in Yelahanka near the airport zone",
+      "investment_horizon_years": 10,
+      "risk_level": "Low",
+      "confidence_level": "High"
+    },
+    {
+      "insight_id": "INS005",
+      "insight_type": "Property Type",
+      "target_category": "Villa",
+      "condition": "If user has a budget above 2Cr and wants a premium self-use or resale asset",
+      "recommendation": "Invest in independent villas in HSR Layout or Marathahalli with 3–4BHK configuration",
+      "expected_capital_appreciation_min": 12.0,
+      "expected_capital_appreciation_max": 15.0,
+      "investment_horizon_years": 5,
+      "risk_level": "Medium",
+      "confidence_level": "High"
+    },
+    {
+      "insight_id": "INS006",
+      "insight_type": "Property Type",
+      "target_category": "Apartment",
+      "condition": "If user is a first-time buyer seeking immediate rental income with budget 60L–1.2Cr",
+      "recommendation": "Choose gated community 2BHK apartments in IT-adjacent areas such as Electronic City or Hebbal",
+      "expected_rental_yield_min": 3.5,
+      "expected_rental_yield_max": 4.5,
+      "expected_capital_appreciation_min": 6.0,
+      "expected_capital_appreciation_max": 9.0,
+      "risk_level": "Low",
+      "confidence_level": "High"
+    },
+    {
+      "insight_id": "INS007",
+      "insight_type": "Property Type",
+      "target_category": "Plot",
+      "condition": "If user wants maximum flexibility and long-term land value growth",
+      "recommendation": "Acquire BMRDA or BBMP-approved plots in KR Puram or Yelahanka below 50L",
+      "reasoning": "Plots provide construction flexibility, attract lower GST, and appreciate faster in growth corridors.",
+      "risk_level": "High",
+      "confidence_level": "Medium"
+    },
+    {
+      "insight_id": "INS009",
+      "insight_type": "Budget",
+      "target_category": "Budget 50L–1Cr",
+      "condition": "If user has a mid-range budget and wants balanced rental and appreciation returns",
+      "recommendation": "Buy 2BHK apartments in Sarjapur, Bellandur, or Electronic City in the 60L–90L range",
+      "budget_range_min_lakhs": 50,
+      "budget_range_max_lakhs": 100,
+      "recommended_price_range_lakhs_min": 60,
+      "recommended_price_range_lakhs_max": 90,
+      "expected_rental_yield_min": 3.5,
+      "expected_rental_yield_max": 4.5,
+      "expected_capital_appreciation_min": 7.0,
+      "expected_capital_appreciation_max": 9.0,
+      "risk_level": "Low",
+      "confidence_level": "High"
+    },
+    {
+      "insight_id": "INS010",
+      "insight_type": "Budget",
+      "target_category": "Budget above 2Cr",
+      "condition": "If user has a high budget and wants a trophy asset with prestige value",
+      "recommendation": "Invest in luxury villas in Bannerghatta Road or HSR Layout with 4BHK configuration",
+      "budget_range_min_cr": 2,
+      "expected_capital_appreciation_min": 12.0,
+      "expected_capital_appreciation_max": 18.0,
+      "investment_horizon_years": 5,
+      "risk_level": "Medium",
+      "confidence_level": "High"
+    },
+    {
+      "insight_id": "INS011",
+      "insight_type": "Risk",
+      "target_category": "Low Risk Investor",
+      "condition": "If user prioritises capital safety over high returns",
+      "recommendation": "Invest in ready-to-move apartments in Whitefield or Hebbal from reputed builders",
+      "reasoning": "Completed projects eliminate construction risk. Established locations with proven rental history provide predictable income and low vacancy probability.",
+      "risk_level": "Low",
+      "confidence_level": "High"
+    },
+    {
+      "insight_id": "INS014",
+      "insight_type": "Strategy",
+      "target_category": "Rental Focus",
+      "condition": "If user wants immediate and consistent monthly rental cash flow",
+      "recommendation": "Buy furnished 2BHK apartments near IT parks in Whitefield or Electronic City and list on corporate lease",
+      "expected_rental_yield_min": 4.0,
+      "expected_rental_yield_max": 5.0,
+      "corporate_lease_premium_percent_min": 20.0,
+      "corporate_lease_premium_percent_max": 30.0,
+      "vacancy_rate_percent": 0.0,
+      "risk_level": "Low",
+      "confidence_level": "High"
+    },
+    {
+      "insight_id": "INS015",
+      "insight_type": "Strategy",
+      "target_category": "Resale Focus",
+      "condition": "If user wants to maximise capital gains on exit within 5 years",
+      "recommendation": "Purchase under-construction apartments in Sarjapur or Hebbal and sell post-completion at peak pricing",
+      "entry_discount_percent_min": 15.0,
+      "entry_discount_percent_max": 25.0,
+      "expected_total_returns_percent_min": 35.0,
+      "expected_total_returns_percent_max": 50.0,
+      "investment_horizon_years": 5,
+      "risk_level": "Medium",
+      "confidence_level": "Medium"
+    },
+    {
+      "insight_id": "INS018",
+      "insight_type": "Timing",
+      "target_category": "Ready-to-Move Entry",
+      "condition": "If user needs immediate rental deployment or personal use without waiting risk",
+      "recommendation": "Buy ready-to-move properties in Whitefield or Bellandur even at a 10–15% premium over under-construction",
+      "ready_to_move_premium_percent_min": 10.0,
+      "ready_to_move_premium_percent_max": 15.0,
+      "premium_recovery_timeline_months": 24,
+      "risk_level": "Low",
+      "confidence_level": "High"
+    },
+    {
+      "insight_id": "INS019",
+      "insight_type": "Timing",
+      "target_category": "Infrastructure-Led Entry",
+      "condition": "If user wants to time investment ahead of confirmed infrastructure announcements",
+      "recommendation": "Invest in KR Puram or Hebbal before metro Phase 3 completion drives a price re-rating",
+      "historical_appreciation_percent_min": 15.0,
+      "historical_appreciation_percent_max": 25.0,
+      "historical_appreciation_timeline_months": 18,
+      "expected_appreciation_percent_min": 20.0,
+      "expected_appreciation_percent_max": 30.0,
+      "expected_appreciation_timeline_months": 24,
+      "risk_level": "Medium",
+      "confidence_level": "High"
+    }
+  ],
+  "market_analysis": [
+    {
+      "location": "Whitefield",
+      "rental_demand": "High",
+      "previous_avg_price_per_sqft": 6500,
+      "current_avg_price_per_sqft": 7300,
+      "price_growth_percent": 12.3,
+      "strengths": ["IT hubs", "Metro access", "Established infrastructure"],
+      "risks": ["Traffic congestion", "Premium pricing"],
+      "assessment": "Ideal for both rental income and long-term appreciation"
+    },
+    {
+      "location": "Electronic City",
+      "rental_demand": "High",
+      "previous_avg_price_per_sqft": 4800,
+      "current_avg_price_per_sqft": 5250,
+      "price_growth_percent": 9.4,
+      "strengths": ["Affordability", "Steady tenant demand"],
+      "risks": ["Limited premium developments"],
+      "assessment": "Best suited for budget-conscious buyers and rental investors"
+    },
+    {
+      "location": "Sarjapur Road",
+      "rental_demand": "Medium to High",
+      "previous_avg_price_per_sqft": 5900,
+      "current_avg_price_per_sqft": 6700,
+      "price_growth_percent": 13.6,
+      "strengths": ["Emerging infrastructure", "Connectivity to IT hubs"],
+      "assessment": "Fast-growing residential corridor with infrastructure development"
+    },
+    {
+      "location": "Yelahanka",
+      "rental_demand": "Medium",
+      "previous_avg_price_per_sqft": 4900,
+      "current_avg_price_per_sqft": 5300,
+      "price_growth_percent": 8.2,
+      "strengths": ["Less congestion", "Planned development"],
+      "risks": ["Slower appreciation compared to IT hubs"],
+      "assessment": "Suitable for end-users and long-term investors"
+    },
+    {
+      "location": "Hebbal",
+      "rental_demand": "Medium",
+      "previous_avg_price_per_sqft": 7200,
+      "current_avg_price_per_sqft": 8050,
+      "price_growth_percent": 11.8,
+      "strengths": ["Airport access", "Premium projects"],
+      "risks": ["Higher property prices"],
+      "assessment": "Ideal for capital appreciation and premium investments"
+    },
+    {
+      "location": "HSR Layout",
+      "rental_demand": "High",
+      "current_avg_price_per_sqft": 7100,
+      "price_growth_percent": 10.9,
+      "strengths": ["IT connectivity", "High tenant demand"],
+      "risks": ["Traffic congestion", "Infrastructure pressure"],
+      "assessment": "One of the best areas for rental income"
+    },
+    {
+      "location": "KR Puram",
+      "rental_demand": "Medium",
+      "previous_avg_price_per_sqft": 4700,
+      "current_avg_price_per_sqft": 5350,
+      "price_growth_percent": 13.8,
+      "strengths": ["Connectivity", "Upcoming developments"],
+      "risks": ["Still developing infrastructure"],
+      "assessment": "Good for early-stage investment"
+    },
+    {
+      "location": "Bellandur",
+      "rental_demand": "High",
+      "strengths": ["Proximity to IT hubs", "Strong rental market"],
+      "risks": ["Traffic congestion", "Limited new supply"],
+      "assessment": "Suitable for rental-focused investments"
+    },
+    {
+      "location": "Bannerghatta Road",
+      "rental_demand": "Medium",
+      "previous_avg_price_per_sqft": 5300,
+      "current_avg_price_per_sqft": 5850,
+      "price_growth_percent": 10.4,
+      "strengths": ["Educational institutions", "Hospitals"],
+      "risks": ["Traffic congestion"],
+      "assessment": "Balanced option for both living and investment"
+    }
+  ],
+  "legal_requirements": {
+    "mandatory_documents": [
+      {
+        "document_type": "PAN Card",
+        "category": "Buyer Documents",
+        "required": true,
+        "description": "PAN Card is required for all property transactions for tax identification and registration purposes."
+      },
+      {
+        "document_type": "Identity Proof",
+        "category": "Buyer Documents",
+        "required": true,
+        "accepted_forms": ["Aadhaar Card", "Passport", "Driving License"],
+        "description": "Identity proof is required to verify the identity of the buyer."
+      },
+      {
+        "document_type": "Address Proof",
+        "category": "Buyer Documents",
+        "required": true,
+        "accepted_forms": ["Aadhaar Card", "Utility bills", "Passport"],
+        "description": "Address proof is required to confirm the residential address of the buyer."
+      }
+    ],
+    "conditional_documents": [
+      {
+        "document_type": "Income Proof",
+        "category": "Buyer Documents - Conditional",
+        "required": "conditional",
+        "condition": "When applying for home loan",
+        "components": ["Salary slips", "Income Tax Returns (ITR)", "Bank statements"],
+        "description": "Income proof is required when applying for a home loan."
+      },
+      {
+        "document_type": "Bank Statement",
+        "category": "Buyer Documents - Conditional",
+        "required": "conditional",
+        "condition": "Loan eligibility verification",
+        "timeline": "Last 6 months",
+        "description": "Bank statements for the last 6 months are required to verify financial stability and eligibility for loan."
+      }
+    ]
+  },
+  "database_integration_summary": {
+    "property_listings": {
+      "total_records": 11,
+      "properties_extracted": ["PROP001-PROP011"],
+      "locations_covered": 9,
+      "property_types": ["Apartment", "Villa", "Plot"],
+      "price_range_inr": {
+        "min": 3800000,
+        "max": 32000000
+      },
+      "agents_involved": 3,
+      "recommended_indexes": ["location", "property_type", "price_range"]
+    },
+    "investment_insights": {
+      "total_insights": 13,
+      "categories": ["Location", "Property Type", "Budget", "Risk", "Strategy", "Timing"],
+      "locations_referenced": ["Whitefield", "Sarjapur", "Yelahanka", "Electronic City", "Hebbal", "HSR Layout", "KR Puram"],
+      "property_types_covered": ["Apartment", "Villa", "Plot"]
+    },
+    "market_analysis": {
+      "total_locations": 9,
+      "price_growth_range": "8.2% - 13.8%",
+      "highest_growth": "KR Puram (13.8%)",
+      "lowest_growth": "Yelahanka (8.2%)",
+      "rental_demand_levels": ["Low", "Medium", "Medium-High", "High"]
+    }
+  }
+}
