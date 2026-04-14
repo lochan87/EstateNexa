@@ -1,18 +1,30 @@
 fastapi
 uvicorn
 psycopg2-binary
+sqlalchemy
 passlib
 python-jose[cryptography]
 pydantic[email]
 python-dotenv
 langchain
+<<<<<<< Updated upstream
 langchain-community
 langchain-chroma
 langchain-huggingface
+=======
+>>>>>>> Stashed changes
 langchain-groq
 chromadb
 sentence-transformers
 pytest
 pypdf
+<<<<<<< Updated upstream
 groq
 python-dotenv
+=======
+python-docx
+requests
+groq
+tenacity
+streamlit
+>>>>>>> Stashed changes
