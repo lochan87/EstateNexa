@@ -1,65 +1,53 @@
-from pathlib import Path
-
+"""
+FastAPI application entry point.
+"""
+import os
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
-<<<<<<< Updated upstream
-from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
+from backend.database.init_db import init_db, seed_db
+from backend.auth.routes import router as auth_router
+from backend.chat.routes import router as chat_router
 
-from auth import router as auth_router
-from comparison_tool.api import router as comparison_router
-from rag.api import router as rag_router
-from routes import summarization
 
-load_dotenv(Path(__file__).resolve().parents[1] / ".env")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Run DB init, seeding, and ChromaDB ingestion on startup."""
+    print("[Startup] Initializing database...")
+    init_db()
+    seed_db()
 
-app = FastAPI(title="EstateNexa API", version="1.0.0")
+    # Ingest documents into ChromaDB
+    try:
+        from backend.rag.ingestion import ingest_documents
+        docs_root = os.path.join(os.path.dirname(__file__), "..", "docs")
+        ingest_documents(docs_root=docs_root)
+    except Exception as e:
+        print(f"[Startup] ChromaDB ingestion warning: {e}")
+
+    yield
+    print("[Shutdown] Cleaning up...")
+
+
+app = FastAPI(
+    title="EstateNexa AI",
+    description="Role-based AI assistant for real estate with RAG capabilities.",
+    version="1.0.0",
+    lifespan=lifespan,
+)
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-=======
-from fastapi.middleware.cors import CORSMiddleware
-from dotenv import load_dotenv
-import os
-
-# Load environment variables
-load_dotenv()
-
-from auth import router as auth_router
-from investment.investment_routes import router as investment_router
-from document_routes import router as document_router
-
-app = FastAPI(title="EstateNexa API", version="1.0.0")
-
-# CORS middleware
-CORS_ORIGINS = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:8501").split(",")
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=CORS_ORIGINS,
->>>>>>> Stashed changes
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-<<<<<<< Updated upstream
 app.include_router(auth_router)
-app.include_router(rag_router)
-app.include_router(comparison_router)
-app.include_router(summarization.router)
-=======
-# Include routers
-app.include_router(auth_router)
-app.include_router(investment_router)
-app.include_router(document_router)
->>>>>>> Stashed changes
-
-
-@app.get("/")
-def root():
-    return {"message": "EstateNexa backend is running"}
+app.include_router(chat_router)
 
 
 @app.get("/health")
-def health_check():
-    return {"status": "ok"}
+def health():
+    return {"status": "ok", "service": "real-estate-assistant-backend"}
