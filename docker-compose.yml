@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: estatepro-postgres
+    container_name: estatenexa-postgres
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -20,7 +20,7 @@ services:
     build:
       context: .
       dockerfile: backend/Dockerfile
-    container_name: estatepro-backend
+    container_name: estatenexa-backend
     env_file: .env
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
@@ -50,7 +50,7 @@ services:
     build:
       context: .
       dockerfile: frontend/Dockerfile
-    container_name: estatepro-frontend
+    container_name: estatenexa-frontend
     environment:
       BACKEND_URL: ${BACKEND_URL_DOCKER:-http://backend:8080}
     depends_on:
