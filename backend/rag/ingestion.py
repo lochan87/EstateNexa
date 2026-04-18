@@ -1,161 +1,136 @@
-import csv
-import json
-import re
+"""
+ChromaDB ingestion: reads PDFs from docs/, chunks them, and stores in ChromaDB.
+
+Uses PersistentClient — no separate Chroma server required.
+Ingestion is SKIPPED if the collection already contains data (i.e. already done before).
+Pass force_reingest=True to wipe and re-ingest from scratch.
+"""
 from pathlib import Path
-from typing import Iterable
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+import chromadb
+from backend.core.config import get_settings
 
-from langchain_core.documents import Document
-from pypdf import PdfReader
+try:
+    from pypdf import PdfReader
+except ImportError:
+    from PyPDF2 import PdfReader  # fallback
 
-from rag.vector_store import upsert_property_documents
+settings = get_settings()
 
-SENSITIVE_METADATA_FIELDS = {"actual_price"}
+# Resolve chroma_store path relative to this file (not CWD dependent)
+_CHROMA_PATH = str(
+    (Path(__file__).parent.parent.parent / "chroma_store").resolve()
+)
 
-
-def _to_float(value: str | int | float | None) -> float | None:
-    if value in (None, ""):
-        return None
-    try:
-        return float(value)
-    except (TypeError, ValueError):
-        return None
-
-
-def _to_number_from_text(value: str | None) -> float | None:
-    if not value:
-        return None
-    cleaned = re.sub(r"[^0-9.]", "", value)
-    return _to_float(cleaned)
+TOOL_MAP = {
+    "property_documents":       "property_retrieval",
+    "public_property_listings": "property_retrieval",
+    "legal_documents":          "summarization",
+    "market_reports":           "market_analysis",
+    "market_summary":           "market_analysis",
+    "investment_insights":      "investment_recommendation",
+}
 
 
-def _normalize_pdf_record(raw: dict[str, str]) -> dict:
-    area = raw.get("area") or raw.get("location")
-    city = raw.get("city")
-    location = f"{area}, {city}" if area and city else (area or city)
+def _get_client():
+    return chromadb.PersistentClient(path=_CHROMA_PATH)
 
-    agent_details = {
-        "agent_id": raw.get("agent id"),
-        "agent_name": raw.get("agent name"),
-        "agent_contact": raw.get("agent contact"),
-        "agency_name": raw.get("agency name"),
-        "experience_years": raw.get("agent experience (years)"),
-    }
+
+def _read_pdf(pdf_path: Path) -> str:
+    reader = PdfReader(str(pdf_path))
+    return "\n".join(page.extract_text() or "" for page in reader.pages)
+
+
+def _determine_metadata(file_path: Path) -> dict:
+    fname = file_path.stem
+    parts = file_path.parts
+
+    if "admin" in parts:
+        role_access = ["admin"]
+        agent_id = None
+        price_visibility = "actual_and_quoted"
+    elif "agent" in parts:
+        agent_id = fname.split("_")[-1] if "_" in fname else None
+        role_access = ["admin", "agent"]
+        price_visibility = "actual_and_quoted"
+    else:
+        role_access = ["admin", "agent", "buyer"]
+        agent_id = None
+        price_visibility = "quoted_only"
+
+    tool = "property_retrieval"
+    for keyword, t in TOOL_MAP.items():
+        if keyword in fname:
+            tool = t
+            break
 
     return {
-        "property_id": raw.get("property id"),
-        "location": location,
-        "actual_price": _to_number_from_text(raw.get("actual price (inr)")),
-        "quoted_price": _to_number_from_text(raw.get("quoted price (inr)")),
-        "bedrooms": _to_number_from_text(raw.get("bedrooms")),
-        "property_type": raw.get("property type"),
-        "amenities": raw.get("amenities", ""),
-        "description": raw.get("description", ""),
-        "agent_details": json.dumps(agent_details),
+        "tool":             tool,
+        "role_access":      ",".join(role_access),
+        "agent_id":         agent_id or "",
+        "price_visibility": price_visibility,
+        "source":           str(file_path),
     }
 
 
-def _parse_property_records_from_pdf_text(text: str) -> list[dict]:
-    records: list[dict[str, str]] = []
-    current: dict[str, str] = {}
-    current_key: str | None = None
-
-    for raw_line in text.splitlines():
-        line = raw_line.strip()
-        if not line:
-            continue
-
-        if ":" in line:
-            key, value = line.split(":", 1)
-            key = key.strip().lower()
-            value = value.strip()
-
-            if key == "property id":
-                if current:
-                    records.append(current)
-                current = {}
-
-            if current or key == "property id":
-                current[key] = value
-                current_key = key
-            continue
-
-        if current and current_key:
-            current[current_key] = f"{current[current_key]} {line}".strip()
-
-    if current:
-        records.append(current)
-
-    return [_normalize_pdf_record(row) for row in records if row.get("property id")]
-
-
-def build_property_document(record: dict) -> Document:
-    property_id = str(record.get("property_id", ""))
-    location = record.get("location")
-    actual_price = _to_float(record.get("actual_price"))
-    quoted_price = _to_float(record.get("quoted_price"))
-    bedrooms_value = record.get("bedrooms")
-    bedrooms = int(float(bedrooms_value)) if bedrooms_value not in (None, "") else None
-    property_type = record.get("property_type")
-    amenities = record.get("amenities") or []
-    description = record.get("description") or ""
-    agent_details = record.get("agent details") or record.get("agent_details") or ""
-
-    if isinstance(amenities, str):
-        amenities = [a.strip() for a in amenities.split(",") if a.strip()]
-
-    page_content = (
-        f"Property {property_id} in {location}. "
-        f"Type: {property_type}. Bedrooms: {bedrooms}. "
-        f"Amenities: {', '.join(amenities)}. "
-        f"Description: {description}. "
-        f"Agent details: {agent_details}."
+def ingest_documents(docs_root: str = "docs", force_reingest: bool = False):
+    """
+    Ingest PDFs into ChromaDB using PersistentClient.
+    Skips ingestion if the collection already has data unless force_reingest=True.
+    """
+    client = _get_client()
+    collection = client.get_or_create_collection(
+        name=settings.chroma_collection_name,
+        metadata={"hnsw:space": "cosine"},
     )
 
-    metadata = {
-        "property_id": property_id,
-        "location": location,
-        "actual_price": actual_price,
-        "quoted_price": quoted_price,
-        "bedrooms": bedrooms,
-        "property_type": property_type,
-        "amenities": amenities,
-        "sensitive_tags": sorted(SENSITIVE_METADATA_FIELDS),
-    }
+    # ── Skip if already ingested ───────────────────────────────────────────────
+    existing_count = collection.count()
+    if existing_count > 0 and not force_reingest:
+        print(f"[Ingest] Skipping — collection already has {existing_count} chunks.")
+        return existing_count
 
-    return Document(page_content=page_content, metadata=metadata)
+    # ── Wipe and re-ingest ─────────────────────────────────────────────────────
+    if force_reingest and existing_count > 0:
+        client.delete_collection(name=settings.chroma_collection_name)
+        collection = client.get_or_create_collection(
+            name=settings.chroma_collection_name,
+            metadata={"hnsw:space": "cosine"},
+        )
+        print("[Ingest] Cleared existing collection for re-ingestion.")
 
+    docs_path = Path(docs_root)
+    if not docs_path.exists():
+        print(f"[Ingest] docs folder '{docs_root}' not found — skipping.")
+        return 0
 
-def load_records(dataset_path: str | Path) -> list[dict]:
-    path = Path(dataset_path)
-    if not path.exists():
-        raise FileNotFoundError(f"Dataset not found: {dataset_path}")
+    pdf_files = list(docs_path.rglob("*.pdf"))
+    if not pdf_files:
+        print("[Ingest] No PDF files found.")
+        return 0
 
-    if path.suffix.lower() == ".json":
-        return json.loads(path.read_text(encoding="utf-8"))
+    splitter = RecursiveCharacterTextSplitter(chunk_size=600, chunk_overlap=80)
+    total_chunks = 0
 
-    if path.suffix.lower() == ".csv":
-        with path.open("r", encoding="utf-8", newline="") as file:
-            return list(csv.DictReader(file))
+    for pdf_file in pdf_files:
+        try:
+            content = _read_pdf(pdf_file)
+        except Exception as e:
+            print(f"[Ingest] WARNING: could not read {pdf_file.name}: {e}")
+            continue
 
-    if path.suffix.lower() == ".pdf":
-        reader = PdfReader(str(path))
-        full_text = "\n".join((page.extract_text() or "") for page in reader.pages)
-        records = _parse_property_records_from_pdf_text(full_text)
-        if not records:
-            raise ValueError("No property records found in PDF. Verify Property ID/key-value formatting.")
-        return records
+        if not content.strip():
+            print(f"[Ingest] WARNING: {pdf_file.name} is empty — skipping.")
+            continue
 
-    raise ValueError("Only JSON, CSV, and PDF datasets are supported")
+        chunks    = splitter.split_text(content)
+        metadata  = _determine_metadata(pdf_file)
+        ids       = [f"{pdf_file.stem}_chunk_{i}" for i in range(len(chunks))]
+        metadatas = [metadata.copy() for _ in chunks]
 
+        collection.upsert(ids=ids, documents=chunks, metadatas=metadatas)
+        total_chunks += len(chunks)
+        print(f"[Ingest] {pdf_file.name}: {len(chunks)} chunks → ChromaDB")
 
-def ingest_property_dataset(dataset_path: str | Path) -> int:
-    records = load_records(dataset_path)
-    docs = [build_property_document(record) for record in records]
-    upsert_property_documents(docs)
-    return len(docs)
-
-
-def ingest_property_records(records: Iterable[dict]) -> int:
-    docs = [build_property_document(record) for record in records]
-    upsert_property_documents(docs)
-    return len(docs)
+    print(f"[Ingest] Done. Total chunks: {total_chunks}")
+    return total_chunks
